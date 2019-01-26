@@ -23,7 +23,8 @@ class ViewController: UIViewController {
         guard let mazeView = self.mazeView else { return }
         
         let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(ViewController.tripleTapDetected(_:)))
-        gestureRecognizer.numberOfTapsRequired = 5
+        gestureRecognizer.numberOfTapsRequired = 3
+        gestureRecognizer.numberOfTouchesRequired = 2
         mazeView.addGestureRecognizer(gestureRecognizer)
     }
 
@@ -53,4 +54,3 @@ class ViewController: UIViewController {
         }
     }
 }
-
