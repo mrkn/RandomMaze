@@ -20,16 +20,26 @@ class MazeView: UIView {
         let y = CGFloat(j) * blockWidth
         UIRectFill(CGRect(x: x, y: y, width: blockWidth, height: blockWidth))
     }
-
+    
+    func updateBlock(_ i: Int, _ j: Int) {
+        let x = CGFloat(i) * blockWidth
+        let y = CGFloat(j) * blockWidth
+        setNeedsDisplay(CGRect(x: x, y: y, width: blockWidth, height: blockWidth))
+    }
+    
     override func draw(_ rect: CGRect) {
         UIColor.white.setFill()
-        UIRectFill(self.bounds)
+        UIRectFill(rect)
 
         guard let maze = self.maze else { return }
 
         UIColor.black.setFill()
-        for j in 2...(maze.height-2) {
-            for i in 2...(maze.width-2) {
+        let minI = Int(floor(rect.minX / blockWidth))
+        let maxI = Int(ceil(rect.maxX / blockWidth))
+        let minJ = Int(floor(rect.minY / blockWidth))
+        let maxJ = Int(ceil(rect.maxY / blockWidth))
+        for j in minJ...maxJ {
+            for i in minI...maxI {
                 if maze[i, j] {
                     drawBlock(i, j)
                 }

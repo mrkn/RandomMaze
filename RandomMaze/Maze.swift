@@ -36,6 +36,7 @@ class Maze: NSObject {
         self.height = height
 
         super.init()
+        self.clear()
     }
 
     func linearIndex(_ x:Int, _ y:Int) -> Int {
@@ -45,6 +46,8 @@ class Maze: NSObject {
     func indexIsValid(_ x:Int, _ y:Int) -> Bool {
         return 0 <= x && x <= width && 0 <= y && y <= height
     }
+
+    var updateCallback: ((Int, Int) -> Void)?
 
     subscript(x:Int, y:Int) -> Bool {
         get {
@@ -56,10 +59,13 @@ class Maze: NSObject {
         set(newValue) {
             if indexIsValid(x, y) {
                 area[linearIndex(x, y)] = newValue
+                if updateCallback != nil {
+                    updateCallback!(x, y)
+                }
             }
         }
     }
-    
+
     func addSite(_ i:Int, _ j:Int) {
         xx[nsite] = i
         yy[nsite] = j
@@ -79,9 +85,22 @@ class Maze: NSObject {
         yy[r] = yy[nsite]
         return (true, i, j)
     }
-    
-    func initMaze() {
+
+    private func withUpdateCallback(_ callback: @escaping (Int, Int) -> Void, block: @convention(block) () -> Void) {
+        let last = updateCallback
+        self.updateCallback = callback
+        block()
+        self.updateCallback = last
+    }
+
+    func clear() {
         self.area = [Bool](repeating: false, count: (width+1) * (height+1))
+    }
+
+    private func initMaze() {
+        for i in 0..<self.area.count {
+            self.area[i] = false
+        }
 
         for i in 2...(width-2) {
             self[i, 2] = true
@@ -107,8 +126,8 @@ class Maze: NSObject {
             addSite(width-2, j)
         }
     }
-    
-    func makeMaze() {
+
+    private func makeMaze() {
         while true {
             print("nsite: %d", nsite)
             var (success, i, j) = selectSite()
@@ -138,8 +157,10 @@ class Maze: NSObject {
         }
     }
 
-    public func reset() {
-        initMaze()
-        makeMaze()
+    public func resetMaze(_ progressCallback: @escaping @convention(block) (Int, Int) -> Void) {
+        withUpdateCallback(progressCallback) {
+            initMaze()
+            makeMaze()
+        }
     }
 }
