@@ -11,7 +11,7 @@ import UIKit
 class ViewController: UIViewController {
     @IBOutlet var mazeView: MazeView!
 
-    let drawingWait = 0.001
+    let drawingWait = 0.01
 
     var maze: Maze!
     var mazeWidth: Int = 0
@@ -37,14 +37,8 @@ class ViewController: UIViewController {
         self.maze = Maze(mazeWidth, mazeHeight)
         mazeView.maze = self.maze
 
-        DispatchQueue.global(qos: .default).async {
-            self.maze.resetMaze { (i: Int, j: Int) in
-                DispatchQueue.main.async {
-                    mazeView.updateBlock(i, j)
-                }
-                Thread.sleep(forTimeInterval: self.drawingWait)
-            }
-        }
+        self.maze.resetMaze()
+        mazeView.setNeedsDisplay()
     }
 
     @objc func tripleTapDetected(_ sender: UITapGestureRecognizer) {
@@ -54,14 +48,8 @@ class ViewController: UIViewController {
             self.maze.clear()
             self.mazeView.setNeedsDisplay()
 
-            DispatchQueue.global(qos: .default).async {
-                self.maze.resetMaze { (i: Int, j: Int) in
-                    DispatchQueue.main.async {
-                        mazeView.updateBlock(i, j)
-                    }
-                    Thread.sleep(forTimeInterval: self.drawingWait)
-                }
-            }
+            self.maze.resetMaze()
+            mazeView.setNeedsDisplay()
         }
     }
 }

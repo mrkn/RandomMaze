@@ -166,10 +166,8 @@ class Maze: NSObject {
         }
     }
 
-    public func resetMaze(_ progressCallback: @escaping @convention(block) (Int, Int) -> Void) {
-        withUpdateCallback(progressCallback) {
-            initMaze()
-            makeMaze()
-        }
+    public func resetMaze() {
+        initMaze()
+        makeMaze()
     }
 }
