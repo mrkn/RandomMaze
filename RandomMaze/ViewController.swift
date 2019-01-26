@@ -28,12 +28,12 @@ class ViewController: UIViewController {
         gestureRecognizer.numberOfTapsRequired = 3
         gestureRecognizer.numberOfTouchesRequired = 2
         mazeView.addGestureRecognizer(gestureRecognizer)
-
-        initDrawingImage()
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+
+        initDrawingImage()
 
         guard let mazeView = self.mazeView else { return }
 
@@ -50,18 +50,19 @@ class ViewController: UIViewController {
         if sender.state == .ended {
             guard let mazeView = self.mazeView else { return }
 
-            self.maze.clear()
-            self.mazeView.setNeedsDisplay()
+            initDrawingImage()
 
+            self.maze.clear()
             self.maze.resetMaze()
             mazeView.setNeedsDisplay()
         }
     }
 
     func initDrawingImage() {
+        guard let mazeView = self.mazeView else { return }
         guard let imageView = self.drawingImageView else { return }
 
-        UIGraphicsBeginImageContextWithOptions(imageView.bounds.size, true, 1.0)
+        UIGraphicsBeginImageContextWithOptions(mazeView.bounds.size, true, 0.0)
         UIColor.white.setFill()
         UIRectFill(imageView.bounds)
         imageView.image = UIGraphicsGetImageFromCurrentImageContext()!
@@ -71,23 +72,25 @@ class ViewController: UIViewController {
     var lastLocation: CGPoint?
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard let mazeView = self.mazeView else { return }
         let touch = touches.first!
-        lastLocation = touch.location(in: self.mazeView)
+        lastLocation = touch.location(in: mazeView)
     }
 
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard let lastLocation = self.lastLocation else { return }
+        guard let mazeView = self.mazeView else { return }
         guard let imageView = self.drawingImageView else { return }
         guard let lastImage = imageView.image else { return }
 
-        UIGraphicsBeginImageContextWithOptions(imageView.bounds.size, true, 1.0)
+        UIGraphicsBeginImageContextWithOptions(mazeView.bounds.size, true, 0.0)
         lastImage.draw(at: CGPoint(x: 0, y: 0))
 
-        var path = UIBezierPath()
+        let path = UIBezierPath()
         path.move(to: lastLocation)
 
         let touch = touches.first!
-        let currentLocation = touch.location(in: self.mazeView)
+        let currentLocation = touch.location(in: mazeView)
         path.addLine(to: currentLocation)
         self.lastLocation = currentLocation
 
