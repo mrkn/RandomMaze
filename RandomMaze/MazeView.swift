@@ -9,7 +9,7 @@
 import UIKit
 
 class MazeView: UIView {
-    public static let blockWidth: CGFloat = 20
+    public static let blockWidth: CGFloat = 36
     
     var blockWidth: CGFloat { return MazeView.blockWidth }
     
