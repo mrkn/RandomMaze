@@ -26,6 +26,11 @@ class Maze: NSObject {
     var xx: [Int]!
     var yy: [Int]!
 
+    let minVisibleX: Int = 2
+    let minVisibleY: Int = 2
+    var maxVisibleX: Int { return width - 2 }
+    var maxVisibleY: Int { return height - 2 }
+
     init(_ width: Int, _ height: Int) {
         assert(width > 0, "width must be positive")
         assert(height > 0, "height must be positive")
@@ -47,6 +52,10 @@ class Maze: NSObject {
         return 0 <= x && x <= width && 0 <= y && y <= height
     }
 
+    func isVisible(_ x: Int, _ y: Int) -> Bool {
+        return minVisibleX <= x && x <= maxVisibleX && minVisibleY <= y && y <= maxVisibleY
+    }
+
     var updateCallback: ((Int, Int) -> Void)?
 
     subscript(x:Int, y:Int) -> Bool {
@@ -54,12 +63,12 @@ class Maze: NSObject {
             if indexIsValid(x, y) {
                 return area[linearIndex(x, y)]
             }
-            return true
+            return true // all of out bound area are walls
         }
         set(newValue) {
             if indexIsValid(x, y) {
                 area[linearIndex(x, y)] = newValue
-                if updateCallback != nil {
+                if updateCallback != nil && isVisible(x, y) {
                     updateCallback!(x, y)
                 }
             }
@@ -102,28 +111,28 @@ class Maze: NSObject {
             self.area[i] = false
         }
 
-        for i in 2...(width-2) {
-            self[i, 2] = true
-            self[i, height-2] = true
+        for i in minVisibleX...maxVisibleX {
+            self[i, minVisibleY] = true
+            self[i, maxVisibleY] = true
         }
-        for j in 2...(height-2) {
-            self[2, j] = true
-            self[width-2, j] = true
+        for j in minVisibleY...maxVisibleY {
+            self[minVisibleX, j] = true
+            self[maxVisibleX, j] = true
         }
-        self[2, 3] = false
-        self[width-2, height-3] = false
+        self[minVisibleX, minVisibleY + 1] = false
+        self[maxVisibleX, maxVisibleY - 1] = false
 
         self.xx = [Int](repeating: 0, count: maxSite)
         self.yy = [Int](repeating: 0, count: maxSite)
 
-        for i in stride(from: 4, to: width-4, by: 2) {
-            addSite(i, 2)
-            addSite(i, height-2)
+        for i in stride(from: minVisibleX+2, to: maxVisibleX-2, by: 2) {
+            addSite(i, minVisibleY)
+            addSite(i, maxVisibleY)
         }
 
-        for j in stride(from: 4, to: height-4, by: 2) {
-            addSite(2, j)
-            addSite(width-2, j)
+        for j in stride(from: minVisibleY+2, to: maxVisibleY-2, by: 2) {
+            addSite(minVisibleX, j)
+            addSite(maxVisibleX, j)
         }
     }
 

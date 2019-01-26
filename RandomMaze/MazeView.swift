@@ -34,10 +34,10 @@ class MazeView: UIView {
         guard let maze = self.maze else { return }
 
         UIColor.black.setFill()
-        let minI = Int(floor(rect.minX / blockWidth))
-        let maxI = Int(ceil(rect.maxX / blockWidth))
-        let minJ = Int(floor(rect.minY / blockWidth))
-        let maxJ = Int(ceil(rect.maxY / blockWidth))
+        let minI = max(maze.minVisibleX, Int(floor(rect.minX / blockWidth)))
+        let maxI = min(maze.maxVisibleX, Int(ceil(rect.maxX / blockWidth)))
+        let minJ = max(maze.minVisibleY, Int(floor(rect.minY / blockWidth)))
+        let maxJ = min(maze.maxVisibleY, Int(ceil(rect.maxY / blockWidth)))
         for j in minJ...maxJ {
             for i in minI...maxI {
                 if maze[i, j] {
