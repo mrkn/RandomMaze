@@ -18,21 +18,28 @@
                         <rect key="frame" x="0.0" y="0.0" width="834" height="1194"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MxZ-nc-2mf" customClass="MazeView" customModule="RandomMaze" customModuleProvider="target">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="wvv-PH-B55">
                                 <rect key="frame" x="0.0" y="24" width="834" height="1150"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </imageView>
+                            <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MxZ-nc-2mf" customClass="MazeView" customModule="RandomMaze" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="24" width="834" height="1150"/>
                             </view>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="wvv-PH-B55" firstAttribute="centerY" secondItem="MxZ-nc-2mf" secondAttribute="centerY" id="DQu-IZ-2EF"/>
+                            <constraint firstItem="wvv-PH-B55" firstAttribute="centerX" secondItem="MxZ-nc-2mf" secondAttribute="centerX" id="Jzs-dk-LJa"/>
                             <constraint firstItem="MxZ-nc-2mf" firstAttribute="centerY" secondItem="6Tk-OE-BBY" secondAttribute="centerY" id="LMM-uo-1FH"/>
                             <constraint firstItem="MxZ-nc-2mf" firstAttribute="height" secondItem="6Tk-OE-BBY" secondAttribute="height" id="SCD-7s-fdq"/>
+                            <constraint firstItem="wvv-PH-B55" firstAttribute="height" secondItem="MxZ-nc-2mf" secondAttribute="height" id="XT9-vr-rQX"/>
                             <constraint firstItem="MxZ-nc-2mf" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="aEv-KU-RyP"/>
                             <constraint firstItem="MxZ-nc-2mf" firstAttribute="width" secondItem="6Tk-OE-BBY" secondAttribute="width" id="alz-G5-HXY"/>
+                            <constraint firstItem="wvv-PH-B55" firstAttribute="width" secondItem="MxZ-nc-2mf" secondAttribute="width" id="wro-6g-61v"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <connections>
+                        <outlet property="drawingImageView" destination="wvv-PH-B55" id="EXI-Jq-Exl"/>
                         <outlet property="mazeView" destination="MxZ-nc-2mf" id="Qds-hX-IqR"/>
                     </connections>
                 </viewController>

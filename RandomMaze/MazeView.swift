@@ -44,7 +44,7 @@ class MazeView: UIView {
     }
     
     override func draw(_ rect: CGRect) {
-        UIColor.white.setFill()
+        UIColor.init(white: 1.0, alpha: 0.0).setFill()
         UIRectFill(rect)
 
         guard let maze = self.maze else { return }

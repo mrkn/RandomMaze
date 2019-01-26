@@ -10,8 +10,11 @@ import UIKit
 
 class ViewController: UIViewController {
     @IBOutlet var mazeView: MazeView!
+    @IBOutlet var drawingImageView: UIImageView!
 
     let drawingWait = 0.01
+    let strokeWidth: CGFloat = 12.0
+    let strokeColor = UIColor(hue: 85/360.0, saturation: 0.7, brightness: 0.7, alpha: 1.0)
 
     var maze: Maze!
     var mazeWidth: Int = 0
@@ -21,11 +24,12 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         
         guard let mazeView = self.mazeView else { return }
-        
         let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(ViewController.tripleTapDetected(_:)))
         gestureRecognizer.numberOfTapsRequired = 3
         gestureRecognizer.numberOfTouchesRequired = 2
         mazeView.addGestureRecognizer(gestureRecognizer)
+
+        initDrawingImage()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -52,5 +56,48 @@ class ViewController: UIViewController {
             self.maze.resetMaze()
             mazeView.setNeedsDisplay()
         }
+    }
+
+    func initDrawingImage() {
+        guard let imageView = self.drawingImageView else { return }
+
+        UIGraphicsBeginImageContextWithOptions(imageView.bounds.size, true, 1.0)
+        UIColor.white.setFill()
+        UIRectFill(imageView.bounds)
+        imageView.image = UIGraphicsGetImageFromCurrentImageContext()!
+        UIGraphicsEndImageContext()
+    }
+
+    var lastLocation: CGPoint?
+
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        let touch = touches.first!
+        lastLocation = touch.location(in: self.mazeView)
+    }
+
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard let lastLocation = self.lastLocation else { return }
+        guard let imageView = self.drawingImageView else { return }
+        guard let lastImage = imageView.image else { return }
+
+        UIGraphicsBeginImageContextWithOptions(imageView.bounds.size, true, 1.0)
+        lastImage.draw(at: CGPoint(x: 0, y: 0))
+
+        var path = UIBezierPath()
+        path.move(to: lastLocation)
+
+        let touch = touches.first!
+        let currentLocation = touch.location(in: self.mazeView)
+        path.addLine(to: currentLocation)
+        self.lastLocation = currentLocation
+
+        strokeColor.setStroke()
+        path.lineWidth = strokeWidth
+        path.lineCapStyle = .round
+        path.lineJoinStyle = .round
+        path.stroke()
+
+        imageView.image = UIGraphicsGetImageFromCurrentImageContext()!
+        UIGraphicsEndImageContext()
     }
 }
