@@ -76,9 +76,11 @@ class Maze: NSObject {
     }
 
     func addSite(_ i:Int, _ j:Int) {
-        xx[nsite] = i
-        yy[nsite] = j
-        self.nsite += 1
+        if nsite < maxSite {
+            xx[nsite] = i
+            yy[nsite] = j
+            self.nsite += 1
+        }
     }
     
     func selectSite() -> (Bool, Int, Int) {
