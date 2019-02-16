@@ -20,6 +20,10 @@ class ViewController: UIViewController {
     var mazeWidth: Int = 0
     var mazeHeight: Int = 0
 
+    override var prefersStatusBarHidden: Bool {
+        get { return true; }
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
